@@ -7,7 +7,7 @@ pipeline
         {
             steps
             {
-                git 'https://github.com/intelliqittrainings/maven.git'
+                git 'https://github.com/IntelliqDevops/newmaven.git'
             }
         }
         stage('ContBuild')
@@ -21,7 +21,7 @@ pipeline
         {
             steps
             {
-            deploy adapters: [tomcat9(credentialsId: '6f7261ca-d6af-4f8f-a27b-da5bf5383201', path: '', url: 'http://172.31.20.42:8080')], contextPath: 'newtestapp', war: '**/*.war'
+                sh 'scp /var/lib/jenkins/workspace/DeclarativePipeline2/webapp/target/webapp.war ubuntu@172.31.20.42:/var/lib/tomcat10/webapps/testapp.war'
             }
         }
         stage('ContTesting')
@@ -29,20 +29,15 @@ pipeline
             steps
             {
                 git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-            
-                sh 'java -jar /var/lib/jenkins/workspace/DeclarativePipeline1/testing.jar'
+                sh 'java -jar /var/lib/jenkins/workspace/DeclarativePipeline2/testing.jar'
             }
         }
         stage('ContDelivery')
         {
             steps
             {
-               
-                deploy adapters: [tomcat9(credentialsId: '6f7261ca-d6af-4f8f-a27b-da5bf5383201', path: '', url: 'http://172.31.16.93:8080')], contextPath: 'newprodapp', war: '**/*.war'
+                sh 'scp /var/lib/jenkins/workspace/DeclarativePipeline2/webapp/target/webapp.war ubuntu@172.31.16.93:/var/lib/tomcat10/webapps/prodapp.war'
             }
         }
-        
-        
-        
     }
 }
